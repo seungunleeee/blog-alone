@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	 xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts}">
+	
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+
+
+
+
+<div layout:fragment="content">
+	<h1 th:text="${articleinfo.createDate}"> </h1>
+
+	<span sec:authentication="principal.User.username"></span>님 반가워요!
+
+
+	<form method="post" th:action="@{/article/update/{param1}(param1=${articleinfo.id})}">
+			<div class="form-group">
+				<label for="exampleFormControlInput1">Title</label>
+
+				<div th:switch="${articleinfo.iswriter}">
+					<input name="title" type="text" class="form-control"
+						id="exampleFormControlInput1" th:case=false
+						th:value="${articleinfo.title}" disabled></input> <input
+						name="title" type="text" class="form-control"
+						id="exampleFormControlInput1" th:case=true
+						th:value="${articleinfo.title}"></input>
+				</div>
+			</div>
+
+			<div class="form-group" th:switch="${articleinfo.iswriter}">
+				<label for="exampleFormControlTextarea1">Example textarea</label>
+
+
+				<textarea name="content" class="form-control"
+					th:text="${articleinfo.content}" th:case=false
+					id="exampleFormControlTextarea1" rows="8" disabled></textarea>
+
+
+				<textarea name="content" class="form-control"
+					th:text="${articleinfo.content}" th:case=true
+					id="exampleFormControlTextarea1" rows="8"></textarea>
+
+
+
+			</div>
+
+			<div  th:switch="${articleinfo.iswriter}">
+		<div th:case=true>
+		<button  >수정하기</button>
+		<br>
+		<a th:href="@{/article/delete/{param1}(param1=${articleinfo.id})}">삭제하기 </a>
+		
+		 </div>
+		
+		<button  th:case=false disabled type="hidden">등록 </button>
+		</div>
+		
+		
+	</form>
+
+
+
+		<div class="input-group flex-nowrap">
+			<div class="input-group-prepend">
+				<span class="input-group-text" id="addon-wrapping"></span>
+			</div>
+			<form method="post"
+				th:action="@{/comment/{param1}(param1=${articleinfo.id})}">
+				<input type="text" class="form-control" placeholder="Username"
+					aria-label="Username" aria-describedby="addon-wrapping"
+					name="content">
+				<button>댓글달기</button>
+			</form>
+			
+			
+			
+			
+		</div>
+		
+		
+		
+		<br> <br><br>	<br>
+	 	
+
+			<h3>Comments</h3>
+			<!--댓글for문  -->
+			<div id="commentbox" th:each="Comment, status: ${comments}">
+				<div>
+					<div th:if="${Comment.sameuser}">
+						<h3 th:text="${Comment.User.username}"></h3>
+						<form method="post"  th:action="@{/comment/update/{param1}(param1=${Comment.id})}"   >
+						<input type="text" class="form-control" 
+								aria-label="
+								Username" aria-describedby="addon-wrapping" name="content"
+								th:value="${Comment.content}">
+								<h3 th:text="${Comment.createDateTime}"></h3><br>
+								<button>수정하기</button><br>
+						</form>
+								<a th:href="@{/comment/delete/{param1}(param1=${Comment.id})}">삭제하기</a>
+								<br>
+								<form method="post"  th:action="@{/childcomment/{param1}(param1=${Comment.id})}"   >
+						<input type="text" class="form-control" 
+								aria-label="
+								Username" aria-describedby="addon-wrapping" name="content"
+								>
+								<br>
+								<button>댓글달기</button><br>
+						</form>
+					<!--대댓글 for문 시작  -->
+					
+					<hr>
+					<div id="childcommentbox" th:each="ChildComment, status: ${Comment.childcomments}">
+						<!--대댓글  if문-->
+								<div th:if="${ChildComment.sameuser}">
+								<hr>
+						<h3 th:text="|		대댓글		${ChildComment.User.username}|"></h3>
+						<form method="post"  th:action="@{/childcomment/update/{param1}(param1=${ChildComment.id})}"   >
+						<input type="text" class="form-control" 
+								aria-label="
+								Username" aria-describedby="addon-wrapping" name="content"
+								th:value="${ChildComment.content}">
+								<h3 th:text="${ChildComment.createDateTime}"></h3><br>
+								<button>수정하기</button><br>
+						</form>
+								<a th:href="@{/childcomment/delete/{param1}(param1=${ChildComment.id})}">삭제하기</a>
+								<br>
+								<hr>
+												
+							</div>
+						<!--대댓글  if문 끝-->
+						<!--대댓글  unless문 시작-->
+							<div th:unless="${ChildComment.sameuser}">
+							<hr>
+						<h3 th:text="|		대댓글		${ChildComment.User.username}|"></h3>
+						<!--대댓글남이 올린 댓글  -->
+						<input type="text" class="form-control" 
+							aria-label="Username" aria-describedby="addon-wrapping"
+							name="content" th:value="${ChildComment.content}" disabled>
+								<h3 th:text="${ChildComment.createDateTime}"></h3>
+							<br>
+						<hr>
+						</div>
+							<!--대댓글  unless문 끝-->
+						
+						
+						
+				
+					
+						</div><!--   <==대댓글 for문 끝  -->		
+					
+								
+											
+					</div>
+					
+					
+					
+					<!--내가 올린 댓글이 아닐떄  -->
+					<div th:unless="${Comment.sameuser}">
+						<h3 th:text="${Comment.User.username}"></h3>
+						<!--남이 올린 댓글  -->
+						<input type="text" class="form-control" 
+							aria-label="Username" aria-describedby="addon-wrapping"
+							name="content" th:value="${Comment.content}" disabled>
+								<h3 th:text="${Comment.createDateTime}"></h3>
+							<br>
+							<hr>
+							<!-- 대댓글다는 form,input -->
+						<form method="post"  th:action="@{/childcomment/{param1}(param1=${Comment.id})}"   >
+						<input type="text" class="form-control" 
+								aria-label="
+								Username" aria-describedby="addon-wrapping" name="content"
+								>
+								<br>
+								<button>댓글달기</button><br>
+						</form>
+					
+						<hr>
+						<!--대댓글  for문-->
+					<div id="childcommentbox"
+						th:each="ChildComment, status: ${Comment.childcomments}">
+						<!--대댓글  if문-->
+						<div th:if="${ChildComment.sameuser}">
+							<hr>
+							<br>
+							<h3 th:text="|		대댓글		${ChildComment.User.username}|"></h3>
+							<form method="post"
+								th:action="@{/childcomment/update/{param1}(param1=${ChildComment.id})}">
+								<input type="text" class="form-control"
+									aria-label="
+								Username"
+									aria-describedby="addon-wrapping" name="content"
+									th:value="${ChildComment.content}">
+								<h3 th:text="${ChildComment.createDateTime}"></h3>
+								<br>
+								<button>수정하기</button>
+								<br>
+							</form>
+							<a
+								th:href="@{/childcomment/delete/{param1}(param1=${ChildComment.id})}">삭제하기</a>
+							<br>
+
+							<hr>
+						</div>
+						<!--대댓글  if문-->
+						<!--대댓글  unless문-->
+						<div th:unless="${ChildComment.sameuser}">
+							<hr>
+							<br>
+							<h3 th:text="|		대댓글		${ChildComment.User.username}|"></h3>
+							<!--대댓글남이 올린 댓글  -->
+							<input type="text" class="form-control" aria-label="Username"
+								aria-describedby="addon-wrapping" name="content"
+								th:value="${ChildComment.content}" disabled>
+							<h3 th:text="${ChildComment.createDateTime}"></h3>
+							<br>
+							<hr>
+						</div>
+
+
+
+
+
+
+					</div>
+					<!--대댓글 for문 끝  -->
+							
+					</div>
+
+
+
+
+				</div>
+
+
+			</div>
+
+
+
+		
+
+
+		<script th:inline="javascript">
+	let articleinfo = [[${articleinfo}]];
+	let comments=[[${comments}]];
+	console.log(comments);
+	
+	function comment(){
+		console.log(comments);
+		}
+
+	
+	function articleinfos(){
+		alert("working!")
+	}
+	
+	
+	</script>
+
+<script type="text/javascript" th:src="@{/js/hi.js}"></script>
+	
+	
+	
+</div>
+<!-- content의 끝 -->
+
+
+	<!-- <span th:if="${#authentication.principal.user.id} == ${board.user.id}">
+        <button id="btn-delete" class="btn btn-danger">삭제</button>
+        <button id="btn-update" class="btn btn-warning">수정</button>
+    </span> -->
+</body>
+</html>

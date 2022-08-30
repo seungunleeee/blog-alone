@@ -1,0 +1,61 @@
+
+
+
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"	 
+	 xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts}">
+
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+
+<div layout:fragment="content">
+	<h1>demo main 페이지</h1>
+<span th:text ="${#authentication.getPrincipal().getUser().getId()}"></span>
+	<span sec:authentication="principal.User.username"></span>님 반가워요!
+
+
+	<form method="post" action="/article/write">
+		<div class="form-group">
+			<label for="exampleFormControlInput1">Title</label> <input
+				name="title" type="text" class="form-control"
+				id="exampleFormControlInput1" placeholder="all set">
+		</div>
+
+		<div class="form-group">
+			<label for="exampleFormControlTextarea1">Example textarea</label>
+			<textarea name="content" class="form-control"
+				id="exampleFormControlTextarea1" rows="8"></textarea>
+
+		</div>
+		<button>꾸욱</button>
+	</form>
+	
+	
+	
+		
+	
+	
+	
+	
+	
+	
+</div>
+
+
+
+
+
+	<!-- <span th:if="${#authentication.principal.user.id} == ${board.user.id}">
+        <button id="btn-delete" class="btn btn-danger">삭제</button>
+        <button id="btn-update" class="btn btn-warning">수정</button>
+    </span> -->
+</body>
+</html>

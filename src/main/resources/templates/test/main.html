@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	 xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org-extras-springsecurity5"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts}">
+	
+<head>
+
+<!-- <script src="https://code.jquery.com/jquery-3.6.1.min.js"
+	integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ="
+	crossorigin="anonymous"></script> -->
+
+
+
+
+
+
+
+
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div layout:fragment="content">
+		<h5>메인임</h5>
+
+	<!-- 	<a th:onclick="|javascript:shout()|">콘솔로그 출력</a> -->
+
+
+		<div>
+			<a th:href="@{/article/write}">글 작성</a>
+		</div>
+
+
+<!-- 		<script th:src="@{/js/hi.js}">
+/*<![CDATA[*/
+
+var message =  [[ ${ articles  } ]];
+alert(articles);
+givemedata(articles);
+/*]]>*/
+</script> -->
+
+
+
+
+
+		<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">First</th>
+      <th scope="col">Last</th>
+      <th scope="col">Handle</th>
+    </tr>
+  </thead>
+  <tbody id="tbody" >
+ 	<div id="insidetable">
+    <tr>
+      <th scope="row">1</th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>Jacob</td>
+      <td>Thornton</td>
+      <td>@fat</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>Larry</td>
+      <td>the Bird</td>
+      <td>@twitter</td>
+
+    </tr>
+    </div>
+  </tbody>
+</table>
+	<button onclick="shout()"> 더보기</button>
+	
+	
+	<script th:inline="javascript">
+
+let articles = [[${articles}]];
+alert(articles);
+console.log(articles);
+/* givemedata(articles); */
+loadarticle(articles.content,articles.totalPages);
+
+function loadarticle(articles, maximumpage) {
+	/*maxpage=maximumpage;
+	<tr>
+	  <th scope="row">1</th>
+	  <td>Mark</td>
+	  <td>Otto</td>
+	  <td>@mdo</td>
+	</tr>*/
+	$("#tbody").html("");
+	articles.forEach((a) => {
+	
+		let article = getFinedArticle(a);
+		console.log(article);
+		$("#tbody").append(article);
+
+
+	})
+}
+
+    
+function getFinedArticle(a) {
+	console.log(2);
+	console.log(a.content);
+	articlemodel = `<tr id="${a.id}">
+      <th scope="row">${a.title}</th>
+      <td>${a.user.name}</td>
+      <td>${a.createDate}</td>
+      <td><a href="/article/${a.id}">읽기 </a></td>
+    </tr>`;
+	return articlemodel;
+
+}
+
+
+
+
+
+
+</script>
+
+<script type="text/javascript" th:src="@{/js/hi.js}"></script>
+</div>
+
+
+</body>
+</html>
